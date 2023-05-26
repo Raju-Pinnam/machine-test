@@ -11,7 +11,7 @@ from rest_framework.authentication import TokenAuthentication
 
 from .permissions import IsAdminUserPermission
 from .models import Role
-from .serializer import UserSerializer
+from .serializer import UserSerializer, RoleSerializer
 
 User = get_user_model()
 
@@ -103,6 +103,21 @@ class UserDetails(APIView):
         return Response(
             {
                 'data': ser.data
+            },
+            status=status.HTTP_200_OK
+        )
+
+
+class RolesApiView(APIView):
+    model = Role
+    serializer_class = RoleSerializer
+    permission_classes = (IsAdminUserPermission,)
+    
+    def get(self, request):
+        roles = Role.objects.values('id', 'role_name')
+        return Response(
+            {
+                'data': roles
             },
             status=status.HTTP_200_OK
         )
